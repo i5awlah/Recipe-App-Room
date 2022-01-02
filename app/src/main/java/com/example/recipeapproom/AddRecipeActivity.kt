@@ -3,6 +3,7 @@ package com.example.recipeapproom
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.lifecycle.ViewModelProvider
 import com.example.recipeapproom.databinding.ActivityAddRecipeBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +13,7 @@ import kotlinx.coroutines.withContext
 class AddRecipeActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityAddRecipeBinding
-    private val recipeDatabase by lazy { RecipeDatabase.getDatabase(this).RecipeDao() }
+    private val recipeViewModel by lazy { ViewModelProvider(this).get(RecipeViewModel::class.java) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,9 +32,7 @@ class AddRecipeActivity : AppCompatActivity() {
         val instructions = binding.etInstructions.text.toString()
         val newRecipe = Recipe(0, title, author, ingredients, instructions)
 
-        CoroutineScope(Dispatchers.IO).launch {
-            recipeDatabase.addRecipe(newRecipe)
-        }
+        recipeViewModel.addRecipe(newRecipe)
 
 
 //        val intent = Intent(this, MainActivity::class.java)

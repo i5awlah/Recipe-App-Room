@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recipeapproom.databinding.RecipeRowBinding
 
-class RecipeAdapter(private var recipes: List<Recipe>): RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>() {
+class RecipeAdapter(): RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>() {
+    private var recipes = listOf<Recipe>()
     class RecipeViewHolder(val binding: RecipeRowBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeViewHolder {

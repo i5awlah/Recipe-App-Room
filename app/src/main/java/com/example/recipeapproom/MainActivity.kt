@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recipeapproom.databinding.ActivityMainBinding
@@ -20,9 +21,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recipeRecyclerView: RecyclerView
     private lateinit var recipeAdapter: RecipeAdapter
 
-    var recipes = listOf<Recipe>()
+    private val recipeViewModel by lazy { ViewModelProvider(this).get(RecipeViewModel::class.java) }
 
-    private val recipeDatabase by lazy { RecipeDatabase.getDatabase(this).RecipeDao() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,21 +39,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         recipeRecyclerView = binding.rvRecipe
-        recipeAdapter = RecipeAdapter(recipes)
+        recipeAdapter = RecipeAdapter()
         recipeRecyclerView.adapter = recipeAdapter
         recipeRecyclerView.layoutManager = LinearLayoutManager(this)
     }
 
     private fun fetchData() {
-
-        CoroutineScope(IO).launch {
-            recipes = async { recipeDatabase.getRecipes() }.await()
-            if (recipes.isNotEmpty()) {
-                withContext(Main) {
-                    recipeAdapter.updateRV(recipes)
-                }
-            }
-        }
+        recipeViewModel.recipes.observe(this, {
+            recipes -> recipeAdapter.updateRV(recipes)
+        })
 
     }
 
